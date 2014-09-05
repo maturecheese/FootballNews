@@ -71,7 +71,7 @@ public  class GuardianFootballTask extends AsyncTask<Void, Void, ArrayList<Artic
 
         String articleTitle =""; String articleDesc = "";String articlePubDate = ""; String articleImageUrl = "";
 
-        ArrayList<HashMap<String, String>> items = new ArrayList<HashMap<String, String>>();
+        //ArrayList<HashMap<String, String>> items = new ArrayList<HashMap<String, String>>();
         ArrayList<Article> articles = new ArrayList<Article>();
 
 

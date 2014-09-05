@@ -70,4 +70,9 @@ public class PlaceholderFragment extends Fragment {
 
 
     }
+    public void startTaskForCustomCursorAdapter(){
+        Log.d(LOGTAG, "startTaskForCustomCursorAdapter();");
+        downloadTask = new GuardianFootballTask(callBack);
+        downloadTask.execute();
+    }
 }

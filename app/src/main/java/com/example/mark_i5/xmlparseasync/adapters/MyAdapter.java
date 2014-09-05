@@ -36,7 +36,7 @@ public class MyAdapter extends BaseAdapter {
         this.context = context;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.articleIconTask = articleIconTask;
-        this.saveImageTask = new SaveImageTask(context);
+       // this.saveImageTask = new SaveImageTask(context);
     }
     @Override
     public int getCount() {
@@ -78,7 +78,7 @@ public class MyAdapter extends BaseAdapter {
         String[] splits = url.split("/");
         String fileName = splits[splits.length - 1];
         Log.d(LOGTAG, "fileName: " + fileName + "\turl: " + url);
-        saveImageTask.saveImage(fileName, url);
+       // saveImageTask.saveImage(fileName, url);
 
 
         Drawable icon = articleIconTask.loadImage(this, holder.articleImage);

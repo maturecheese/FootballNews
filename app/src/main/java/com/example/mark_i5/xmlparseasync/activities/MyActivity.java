@@ -1,10 +1,17 @@
 package com.example.mark_i5.xmlparseasync.activities;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import com.example.mark_i5.xmlparseasync.adapters.CustomCursorAdapter;
 import com.example.mark_i5.xmlparseasync.data.Article;
 import com.example.mark_i5.xmlparseasync.data.ArticleDatabase;
 import com.example.mark_i5.xmlparseasync.fragments.PlaceholderFragment;
@@ -24,6 +31,8 @@ public class MyActivity extends Activity implements ResultsCallback {
     public ListView articleListView;
     public ArticleIconTask articleIconTask;
     public ArticleDatabase articleDatabase;
+    private CustomCursorAdapter customAdapter;
+    private EditText searchBox;
     //public static ToastMessage L;
 
     @Override
@@ -39,7 +48,8 @@ public class MyActivity extends Activity implements ResultsCallback {
 
     @Override
     public void onImageSaved(String filePath) {
-
+        Log.d(LOGTAG, "image saved at: " + filePath);
+        customAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -51,23 +61,45 @@ public class MyActivity extends Activity implements ResultsCallback {
              articleDatabase.insertArticle(article);
         }
 
-        MyAdapter myAdapter = new MyAdapter(this.getApplicationContext(), items, articleIconTask);
+        //MyAdapter myAdapter = new MyAdapter(this.getApplicationContext(), items, articleIconTask);
 
-        articleListView.setAdapter(myAdapter);
+        //Cursor cursor = articleDatabase.fetchAllArticles();
+        Cursor cursor = articleDatabase.fetchFilteredArticlesAllColumns("falcao");
+        Log.d(LOGTAG, "cursor count: " + cursor.getCount());
+
+
+        CustomCursorAdapter adapter = new CustomCursorAdapter(articleDatabase,this, this.getApplicationContext(),
+                cursor, 0);
+        this.customAdapter = adapter;
+
+        articleListView.setAdapter(adapter);
+    }
+
+    public void search(View v, int keyCode, KeyEvent event){
+
+
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-
-        try {
-            this.articleDatabase = new ArticleDatabase(getApplicationContext());
-            articleDatabase.open();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        Log.d(LOGTAG, "GOt here");
+        this.searchBox = (EditText) findViewById(R.id.searchBox);
+        searchBox.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                return false;
+            }
+        });
+        if(articleDatabase == null) {
+            try {
+                this.articleDatabase = new ArticleDatabase(getApplicationContext());
+                articleDatabase.open();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
         this.articleIconTask = new ArticleIconTask();
         //this.L = new ToastMessage(this.getApplicationContext());
         //L.displayMessage("WTFFF");
@@ -81,7 +113,8 @@ public class MyActivity extends Activity implements ResultsCallback {
         } else {
             taskFragment = (PlaceholderFragment) getFragmentManager().findFragmentByTag("myFragment");
         }
-        taskFragment.startTask();
+        //taskFragment.startTask();
+        taskFragment.startTaskForCustomCursorAdapter();
         articleListView = (ListView) findViewById(R.id.article_listview);
     }
 

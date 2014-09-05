@@ -6,6 +6,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.mark_i5.xmlparseasync.ResultsCallback;
+import com.example.mark_i5.xmlparseasync.data.Article;
+import com.example.mark_i5.xmlparseasync.data.ArticleDatabase;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,18 +26,22 @@ import java.net.UnknownHostException;
 public class SaveImageTask {
     Context context;
     private static final String LOGTAG = "SaveImageTask";
+    private ArticleDatabase database;
     private ResultsCallback callback;
 
 
-    public SaveImageTask(Context context, ResultsCallback callback) {
+    public SaveImageTask(Context context, ArticleDatabase articleDatabase, ResultsCallback callback) {
         this.context = context;
+        this.database = articleDatabase;
+        this.callback = callback;
     }
 
 
-    public void saveImage(String filename, String url){
-        String[] params = new String[2];
+    public void saveImage(String filename, String url, String row_id){
+        String[] params = new String[3];
         params[0]= filename;
         params[1] = url;
+        params[2] = row_id;
         new DownloadImage().execute(params);
     }
 
@@ -44,7 +50,7 @@ public class SaveImageTask {
         @Override
         protected void onPostExecute(String filePath) {
             super.onPostExecute(filePath);
-            callback
+            callback.onImageSaved(filePath);
             //Toast.makeText(context,"saved image to: "+filePath, Toast.LENGTH_LONG);
         }
 
@@ -57,6 +63,7 @@ public class SaveImageTask {
 
                 String fileName = strings[0];
                 String url = strings[1];
+                String row_id = strings[2];
 
                 URL u = new URL(url);
                 HttpURLConnection c = (HttpURLConnection) u.openConnection();
@@ -82,6 +89,9 @@ public class SaveImageTask {
                 f.close();
                 Log.d(LOGTAG, filePath);
                // file.getAbsolutePath();
+                database.updateRowById(Integer.parseInt(row_id), new String[] {ArticleDatabase.ArticleDatabaseHelper.IMAGE_LOCAL_PATH},
+                        new String[] {file.getAbsolutePath()});
+
                 return file.getAbsolutePath();
 
 

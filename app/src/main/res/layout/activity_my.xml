@@ -1,16 +1,25 @@
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 android:layout_width="fill_parent"
 android:layout_height="fill_parent"
 
 android:orientation="vertical">
 
 
-<ListView
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/searchBox"
+        android:layout_weight="1"
+        android:hint="Search">
+    </EditText>
+
+    <ListView
     android:id="@+id/article_listview"
+    android:layout_below="@id/searchBox"
     android:layout_width="fill_parent"
-    android:layout_height="0dip"
-    android:layout_weight="1"
+    android:layout_height="wrap_content"
+
     android:choiceMode="singleChoice"
     android:clickable="true"
     android:focusable="true"
@@ -18,4 +27,4 @@ android:orientation="vertical">
     android:smoothScrollbar="false"></ListView>
 
 
-</LinearLayout>
+</RelativeLayout>
